@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+<head>
+  <title>Drag</title>
+  <style type="text/css">
+    body{
+      border:solid black 1px;
+    }
+    #outer{
+      height: 500px;
+      width: 500px;
+      margin: 50px auto 50px auto;
+      border:solid black 1px;
+      background: white;
+
+    }
+    #inner{
+      position: relative;
+      top:50%;
+      left:50%;
+      height: 50px;
+      width: 50px; 
+      margin-top: -25px;
+      margin-left: -25px;
+      border:solid black 1px;
+      background: red;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="outer">
+    <div id="inner"></div>
+  </div>
+  <div id="mes"></div>
+  <script type="text/javascript">
+
+    var DOM = {};
+    DOM.BaseNsp = {};
+    DOM.BaseNsp.getSrc = function(event){
+      return event.target||event.srcElement;
+    }
+    DOM.BaseNsp.getEvent = function(event){
+      return event ? event : window.event;;
+    }
+    DOM.BaseNsp.bind = function(src,eventType,fun){
+      if(src.attachEvent){
+        src.attachEvent("on"+eventType,fun);
+      }
+      else{
+        src.addEventListener(eventType,fun,false);
+      }
+    }
+    DOM.BaseNsp.unbind = function(src,eventType,fun){
+      if(src.dettachEvent){
+        src.dettachEvent("on"+eventType,fun);
+      }
+      else{
+        src.removeEventListener(eventType,fun,false);
+      }
+    }
+
+    function Drag (outerDivId,innerDivId) { 
+        this.outer = document.getElementById(outerDivId);
+        this.inner = document.getElementById(innerDivId);
+        this.drag(outer,inner);
+      };
+    Drag.prototype.drag = function(outer,inner){
+      var mousedown = function(){
+        DOM.BaseNsp.bind(inner,"mousemove",mousemove);
+        // console.log("onmousedown");
+      };
+      var mouseup =function(){
+        DOM.BaseNsp.unbind(inner,"mousemove",mousemove);
+        // console.log("onmouseup");
+      };
+      var mousemove = function(event){
+        // console.log("onmousemove");
+        var src = DOM.BaseNsp.getSrc(event);
+        var event = DOM.BaseNsp.getEvent(event);
+        inner.style.left = (event.clientX-outer.offsetLeft)+"px";
+        inner.style.top = (event.clientY-outer.offsetTop)+"px";
+        var left = event.clientX-outer.offsetLeft;
+        var top = event.clientY-outer.offsetTop;
+        if(top<inner.offsetHeight/2){
+          inner.style.top = inner.offsetHeight/2+"px";
+        }
+        if(left<inner.offsetWidth/2){
+          inner.style.left = inner.offsetWidth/2+"px";
+        }
+        if(top>outer.offsetHeight-inner.offsetHeight/2){
+          inner.style.top = outer.offsetHeight+-inner.offsetHeight/2+"px";
+        }
+        if(left>outer.offsetWidth-inner.offsetWidth/2){
+          inner.style.left = outer.offsetWidth-inner.offsetWidth/2+"px";
+        }
+      };
+      DOM.BaseNsp.bind(inner,"mousedown",mousedown);
+      DOM.BaseNsp.bind(inner,"mouseup",mouseup);
+    };
+
+    new Drag("outer","inner");
+    
+  </script>
+</body>
+</html>
