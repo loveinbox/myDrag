@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+<head>
+  <title>Drag</title>
+  <style type="text/css">
+    body{
+      border:solid black 1px;
+    }
+    #outer{
+      height: 500px;
+      width: 500px;
+      margin: 50px auto 50px auto;
+      border:solid black 1px;
+      background: white;
+
+    }
+    #inner{
+      position: relative;
+      top:50%;
+      left:50%;
+      height: 50px;
+      width: 50px; 
+      margin-top: -25px;
+      margin-left: -25px;
+      border:solid black 1px;
+      background: red;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="outer">
+    <div id="inner"></div>
+  </div>
+  <div id="mes"></div>
+  <script type="text/javascript">
+    var outer = document.getElementById("outer");
+    var inner = document.getElementById("inner");    
+    var mes = document.getElementById("mes");
+    window.onresize = function (argument) {
+      console.log(inner.clientTop);
+      console.log(inner.clientLeft);
+      console.log("inner.offsetTop = "+inner.offsetTop);
+      console.log("inner.offsetLeft = "+inner.offsetLeft);
+      console.log("inner.offsetWidth = "+inner.offsetWidth);      
+      console.log("inner.offsetHeight = "+inner.offsetHeight);      
+      console.log("inner.clientTop = "+inner.clientTop);
+      console.log("inner.clientLeft = "+inner.clientLeft);
+    }
+    inner.onmousedown = function(event){
+      event = event?event:window.event;
+      src = event.srcElement?event.srcElement:event.target;
+      console.log("onmousedown");
+      console.log("event.offsetX = "+event.offsetX);
+      console.log("event.offsetY = "+event.offsetY);
+      console.log("event.clientX = "+event.clientX);
+      console.log("event.clientY = "+event.clientY);
+      console.log("inner.offsetWidth = "+inner.offsetWidth);
+      console.log("inner.offsetHeight = "+inner.offsetHeight);
+        outer.onmousemove = function(event){      
+        event = event?event:window.event;
+        src = event.srcElement?event.srcElement:event.target;
+        console.log("onmousemove");
+        // console.log("event.clientX = "+event.clientX);
+        // console.log("event.clientY = "+event.clientY);
+        inner.style.left = (event.clientX-outer.offsetLeft)+"px";
+        inner.style.top = (event.clientY-outer.offsetTop)+"px";
+        var left = event.clientX-outer.offsetLeft;
+        var top = event.clientY-outer.offsetTop;
+        if(top<inner.offsetHeight/2){
+          inner.style.top = inner.offsetHeight/2+"px";
+        }
+        if(left<inner.offsetWidth/2){
+          inner.style.left = inner.offsetWidth/2+"px";
+        }
+        if(top>outer.offsetHeight-inner.offsetHeight/2){
+          inner.style.top = outer.offsetHeight+-inner.offsetHeight/2+"px";
+        }
+        if(left>outer.offsetWidth-inner.offsetWidth/2){
+          inner.style.left = outer.offsetWidth-inner.offsetWidth/2+"px";
+        }
+      }      
+    }
+
+    outer.onmouseup = function(){
+      console.log("onmouseup");
+      outer.onmousemove = function() {
+        // body...
+      }
+    }
+
+    document.body.onmousemove = function(event){
+       event = event?event:window.event;
+      mes.innerHTML = event.clientX+"                    "+event.clientY;
+      mes.innerText = event.pageX+"                    "+event.pageY;
+    }
+  </script>
+</body>
+</html>

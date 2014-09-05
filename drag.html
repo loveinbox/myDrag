@@ -1,0 +1,47 @@
+<html>
+<head>
+  <title>JavaScript实现Html元素的拖拽</title>
+  <script language=javascript>
+      var diffx,diffY;
+      var objDiv;
+      var e;
+      function beginDrag(event)
+      {
+        e = event ? event : window.event;
+        objDiv = document.getElementById("div1");
+        diffX = e.clientX - objDiv.offsetLeft; 
+        diffY = e.clientY - objDiv.offsetTop;
+        if (document.all) {
+          document.body.attachEvent("onmousemove",mousemove);
+          document.body.attachEvent("onmouseup",removeEvent);
+        }else{
+            document.body.addEventListener("mousemove",mousemove,false);
+            document.body.addEventListener("mouseup",removeEvent,false);
+        }
+}
+      function mousemove(event)
+      {      
+        objDiv.style.left = event.clientX - diffX;
+        objDiv.style.top = event.clientY - diffY;       
+      }
+      function removeEvent(event)
+      {
+        objDiv = event.srcElement||event.target;
+        if (document.all) {
+          document.body.detachEvent("onmousemove",mousemove);
+         document.body.detachEvent("onmouseup",removeEvent);
+          }else{
+             document.body.removeEventListener("mousemove",mousemove,false);
+            document.body.removeEventListener("mouseup",removeEvent,false);        
+          }
+      }   
+      </script>
+</head>
+<body>
+  <p >
+    JavaScript
+    <div id="div1" style="background-color:Blue; width:100px; height:100px; position:absolute;" onmousedown="beginDrag(event)"></div>
+  </p>
+
+</body>
+</html>
